@@ -1,0 +1,77 @@
+@startuml
+!theme plain
+top to bottom direction
+
+class UserController {
+  + deleteUser(DeleteRequest, HttpServletRequest): BaseResponse<Boolean>
+  + updateUser(UserUpdateRequest, HttpServletRequest): BaseResponse<Boolean>
+  + getUserVOById(long, HttpServletRequest): BaseResponse<UserVO>
+  + userRegister(UserRegisterRequest): BaseResponse<Long>
+  + addUser(UserAddRequest, HttpServletRequest): BaseResponse<Long>
+  + listUserVOByPage(UserQueryRequest, HttpServletRequest): BaseResponse<Page<UserVO>>
+  + getLoginUser(HttpServletRequest): BaseResponse<LoginUserVO>
+  + getUserById(long, HttpServletRequest): BaseResponse<User>
+  + updateMyUser(UserUpdateMyRequest, HttpServletRequest): BaseResponse<Boolean>
+  + userLogin(UserLoginRequest, HttpServletRequest): BaseResponse<LoginUserVO>
+  + userLogout(HttpServletRequest): BaseResponse<Boolean>
+  + listUserByPage(UserQueryRequest, HttpServletRequest): BaseResponse<Page<User>>
+}
+class InterfaceInfoController {
+  + getInterfaceInfoById(long): BaseResponse<InterfaceInfo>
+  + listInterfaceInfo(InterfaceInfoQueryRequest): BaseResponse<List<InterfaceInfo>>
+  + offlineInterfaceInfo(IdRequest): BaseResponse<Boolean>
+  + invokeInterfaceInfo(InterfaceInfoInvokeRequest, HttpServletRequest): BaseResponse<Object>
+  + updateInterfaceInfo(InterfaceInfoUpdateRequest): BaseResponse<Boolean>
+  + onlineInterfaceInfo(IdRequest): BaseResponse<Boolean>
+  + addInterfaceInfo(InterfaceInfoAddRequest, HttpServletRequest): BaseResponse<Long>
+  + listInterfaceInfoByPage(InterfaceInfoQueryRequest, HttpServletRequest): BaseResponse<Page<InterfaceInfo>>
+  + deleteInterfaceInfo(DeleteRequest, HttpServletRequest): BaseResponse<Boolean>
+}
+class UserInterfaceInfoController {
+  + addUserInterfaceInfo(UserInterfaceInfoAddRequest, HttpServletRequest): BaseResponse<Long>
+  + haveInvokeCount(long, long): boolean
+  + updateUserInterfaceInfo(UserInterfaceInfoUpdateRequest): BaseResponse<Boolean>
+  + listUserInterfaceInfo(UserInterfaceInfoQueryRequest): BaseResponse<List<UserInterfaceInfo>>
+  + listUserInterfaceInfoByPage(UserInterfaceInfoQueryRequest, HttpServletRequest): BaseResponse<Page<UserInterfaceInfo>>
+  + getUserInterfaceInfoById(long): BaseResponse<UserInterfaceInfo>
+  + deleteUserInterfaceInfo(DeleteRequest, HttpServletRequest): BaseResponse<Boolean>
+}
+class AnalysisController {
+  + listTopInvokeInterfaceInfo(): BaseResponse<List<InterfaceInfoCountVO>>
+}
+class UserServiceImpl {
+  + getUserVO(List<User>): List<UserVO>
+  + getLoginUserPermitNull(HttpServletRequest): User
+  + userRegister(String, String, String): long
+  + getLoginUserVO(User): LoginUserVO
+  + getQueryWrapper(UserQueryRequest): QueryWrapper<User>
+  + isAdmin(HttpServletRequest): boolean
+  + userLogout(HttpServletRequest): boolean
+  + getUserVO(User): UserVO
+  + userLogin(String, String, HttpServletRequest): LoginUserVO
+  + isAdmin(User): boolean
+  + getLoginUser(HttpServletRequest): User
+}
+class AnalysisServiceImpl {
+  + listTopInvokeInterfaceInfo(): List<InterfaceInfoCountVO>
+}
+class InterfaceInfoServiceImpl {
+  + validInterfaceInfo(InterfaceInfo, boolean): void
+}
+class UserInterfaceInfoServiceImpl {
+  + validUserInterfaceInfo(UserInterfaceInfo, boolean): void
+  + deductInvokeCount(long, long): boolean
+  + haveInvokeCount(long, long): boolean
+}
+interface UserInterfaceInfoMapper << interface >> {
+  + listTopInvokeInterfaceInfo(Integer): List<UserInterfaceInfo>
+  + getUserInvokeCount(Long, Long): Integer
+}
+UserInterfaceInfoController --> UserInterfaceInfoServiceImpl
+UserInterfaceInfoServiceImpl --> UserInterfaceInfoMapper
+AnalysisServiceImpl --> UserInterfaceInfoMapper
+AnalysisServiceImpl --> InterfaceInfoServiceImpl
+InterfaceInfoController --> InterfaceInfoServiceImpl
+AnalysisController -->  AnalysisServiceImpl
+UserController -->  UserServiceImpl
+@enduml
